@@ -1,0 +1,272 @@
+﻿@model  WebXuxeria.Models.MainModel
+    @*@{
+        ViewBag.Title = "Pieces";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }*@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+
+@if (Session["IsAdmin"] != null && Session["IsAdmin"].ToString().ToUpper() == "TRUE")
+{
+    <br />
+    <a href="@Url.Action("ManagePieces", "Pieces")" class="material-icons">tune</a>
+            <br />
+}
+<div class="diccionari">PAPA, MAMA, MAMI, PAPI, CACA, MACA, CAMA, POMA, BOCA, TOTA, PUPA, BOTA, TOTA, TITA, PATATA, PETITA
+    </div>
+<br /><br />
+<div id="rollPattern" style="display:none;">
+    @*data-num goes from 0 to 4 (a e i o u)*@
+    <div class="updown"  data-num="0"   style="z-index:10; top: -23px; transition: top 0.2s, opacity 0.7s,transform 0.7s; "> 
+        <div class="sil xxx"><span id="cons">M</span><span id="vowel">A</span></div>
+        <div class="sil xx"><span id="cons">M</span><span id="vowel">E</span></div>
+        <div class="sil x"><span id="cons">M</span><span id="vowel">I</span></div>
+        <div class="sil x-empty"><span id="cons">M</span><span id="vowel">O</span></div>
+        <div class="sil x-empty"><span id="cons">M</span><span id="vowel">U</span></div>
+    </div>
+</div>
+
+<div id="plantilles">
+    <div class="quadrat" data-sillaba="PA" style="display: none">
+        <i class="material-icons" ontouchstart="$(this).parent().remove();" onclick="$(this).parent().remove();" style="cursor:pointer;">delete_forever</i>
+    </div>
+</div>
+
+<br />
+<br /><br />
+<i class="material-icons" onclick="playAllUpdowns();" style="cursor:pointer; ">play_arrow</i>
+<i class="material-icons" onclick="$('.placeHolder').empty();" style="cursor:pointer;float:right;">delete_forever</i>
+<div class="placeHolder">
+
+</div>
+
+<script>
+    function generate(sillaba, wordid) {
+        var clone = $('.quadrat').first().clone(true);
+        clone.show();
+        clone.attr('data-wordid', wordid);
+        $('#plantilles').append(clone.attr('data-sillaba', sillaba));
+    }
+
+    //generate the several MA, CA, LA.. patterns
+    @foreach (var word in Model.Words)
+    {
+        @Html.Raw("generate('" + @word.Part1.ToUpper() + "', "+ @word.WordId +");");
+    }
+    //generate("PA");
+    //generate("MA");
+    //generate("CA");
+    //generate("LA");
+    //generate("TA"); 
+    
+    //label them taking the data present in data-sillaba
+    $('.quadrat').each(function (index) {
+        $(this).prepend("<div class='ma-label'>" + $(this).data('sillaba') + "</div>");
+    })
+
+  
+
+    var MOUSE_OVER = false;
+    $('body').bind('mousewheel', function (e) {
+        if (MOUSE_OVER) {
+            if (e.preventDefault) { e.preventDefault(); }
+            e.returnValue = false;
+            return false;
+        }
+    });
+
+
+     
+
+
+
+
+    var box2 = $('#plantilles');
+
+    box2.each(function (index) {
+        //alert('wor');
+        ////////DRAGULA - DRAG FROM TEMPLATES AND DROP TO CREATE
+        dragula([this, $('.placeHolder').get(0)], {
+            direction: 'horizontal',
+            copy: true,
+            copySortSource: false,
+            //removeOnSpill: true, 
+            accepts: function (el, target, source) {
+
+                return target.className == 'placeHolder' && target.childElementCount < 9;// source !== $('.placeHolder').get(0); //to avoid moving back
+            }
+        }).on('drop', function (el) {
+            copyOnDrop(el);
+            playAllUpdowns();
+        });
+
+    });
+
+    var starty = 0
+    var dist = 0
+    function copyOnDrop(item) {
+        item.className += ' copied';
+        bindRollEvents(item);
+        $(item).append($('#rollPattern').clone(true).show());
+        $(item).each(function (index) {
+            $(this).find('.ma-label').empty();
+            var consonant = $(this).attr("data-sillaba").charAt(0);
+            $(this).find('#cons').each(function (index) {
+                $(this).html(consonant);
+            });
+            
+        });
+        $(item).children('#rollPattern').attr('id', ''); //rollPattern -> ""
+          
+    }
+
+
+    function bindRollEvents(item) {
+        ///////////////      TOUCH    ///////////
+        http://www.javascriptkit.com/javatutors/touchevents.shtml
+        item.addEventListener('touchstart', function (e) {
+            var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
+            starty = parseInt(touchobj.clientY); // get x position of touch point relative to left edge of browser
+            console.log('touchstart<br> ClientY: ' + starty + 'px');
+            e.preventDefault();
+        }, false)
+
+        item.addEventListener('touchmove', function (e) {
+            var touchobj = e.changedTouches[0]; // reference first touch point for this event
+            var dist = parseInt(touchobj.clientY) - starty;
+            console.log('touchmove<br> Horizontal distance traveled: ' + dist + 'px');
+            e.preventDefault();
+        }, false)
+
+        item.addEventListener('touchend', function (e) {
+            var touchobj = e.changedTouches[0]; // reference first touch point for this event
+            console.log('touchend<br> Resting y coordinate: ' + touchobj.clienty + 'px');
+            e.preventDefault();
+        }, false);
+
+
+
+        //////////////////   WHEEL    ///////////
+        var base = parseInt($('#rollPattern .updown').css('top'));//parseInt takes the 'px' away
+         
+        $(item).mouseenter(function () { MOUSE_OVER = true; });
+        $(item).mouseleave(function () { MOUSE_OVER = false; });
+
+        $(item).bind('mousewheel', function (e) {
+            var updown = $(this).find('.updown');
+            var num = updown.data('num');
+            if (e.originalEvent.wheelDelta < 0) {
+                if (num < 4) num++;
+            } else {
+                if (num > 0) num--;
+            }
+            roll3Deffect(updown, num);
+            updown.css('top', base - num * 63);
+            updown.data('num', num);
+        });
+    }
+
+    function roll3Deffect(updown, num) {
+        updown.children().removeClass("x");// xx xxx x-empty");
+        updown.children().removeClass("xx");
+        updown.children().removeClass("xxx");
+        updown.children().removeClass("x-empty");
+        
+        var sizes=[["xxx","xx","x","x-empty", "x-empty"],
+                   ["xx","xxx","xx","x", "x-empty"],
+                   ["x", "xx", "xxx", "xx", "x"],
+                   ["x-empty", "x", "xx", "xxx", "xx"],
+                   ["x-empty", "x-empty", "x", "xx", "xxx"] ];
+
+        resizeChildren(updown, sizes[num]);
+        updown.attr('data-num', num); //save current position in data-num
+        playUpdown(updown);
+     
+    }
+    var timeout_playAll;
+    function playUpdown(updown) {
+
+        //var wordid = updown.closest('.quadrat').data('wordid');
+        //if (typeWriter != null) typeWriter.pause();
+        //var partid = +updown.attr('data-num') +1;
+        //typeWriter = new Audio("//" + window.location.host + '/Sound?wordid=' + wordid + '&partid=' + partid + '&cb=' + new Date().getTime());
+
+        timeout = setTimeout(function () {
+            playAllUpdowns();
+            //var playPromise = typeWriter.play().then(() => {
+            //    typeWriter.onended = function () { //added now
+            //        playAllUpdowns();
+            //    }
+            //});
+
+        }, 200);
+       
+    }
+
+    function playAllUpdowns() {
+        var array_wordid = [];
+        var array_partid = [];
+        $('.placeHolder .quadrat').each(function () {
+            var wordid = $(this).closest('.quadrat').data('wordid');
+            var num = parseInt($(this).find('.updown').attr('data-num'));
+            var partid = +num + 1;
+            array_wordid.push(wordid);
+            array_partid.push(partid);
+        });
+        count = 0;
+        playOneSound(array_wordid.reverse(), array_partid.reverse());
+    }
+    var count = 0;
+    function playOneSound(array_wordid, array_partid) {
+        if (array_wordid.length == 0) return;
+        count++;
+        var wordid = array_wordid.pop();
+        var partid = array_partid.pop();
+        if (typeWriter != null) typeWriter.pause();
+        console.log("playing " + wordid + ":" + partid);
+        $('.quadrat.copied:nth-child('+count+') .xxx').css('color', 'red');
+        typeWriter = new Audio("//" + window.location.host + '/Sound?wordid=' + wordid + '&partid=' + partid + '&cb=' + new Date().getTime());
+        typeWriter.play().then(() => {
+            typeWriter.onended = function () {
+                $('.quadrat.copied .sil').css('color', '');
+                    playOneSound(array_wordid, array_partid);
+                };
+        }).catch((error) => {
+            //alert("merda1:" + error);
+        });
+    }
+   
+
+    function resizeChildren(updown, sizes1dim) {
+        updown.children('div:nth-child(1)').addClass(sizes1dim[0]);
+        updown.children('div:nth-child(2)').addClass(sizes1dim[1]);
+        updown.children('div:nth-child(3)').addClass(sizes1dim[2]);
+        updown.children('div:nth-child(4)').addClass(sizes1dim[3]);
+        updown.children('div:nth-child(5)').addClass(sizes1dim[4]);
+    }
+
+
+    $('.placeHolder').on('mouseleave', function (item) {
+        if (typeWriter != null) typeWriter.pause();
+        $('.quadrat.copied .sil').css('color', '');
+    });
+
+
+    //we play the Sound of Pattern words with some delays, to avoid sound chaos when mouse goes over very fast
+    //var timeout;
+    var typeWriter
+    //$(' #plantilles > .quadrat').on('mouseenter', function (item) {
+    //    var wordid = $(this).data('wordid');
+    //    if (typeWriter!=null) typeWriter.pause();
+    //    typeWriter = new Audio("//" + window.location.host + '/Sound?wordid=' + wordid + '&partid=1&cb=' + new Date().getTime());
+
+    //    timeout = setTimeout(function () {
+    //       var playPromise = typeWriter.play();
+    //    }, 300);
+    //});
+
+    //$(' #plantilles > .quadrat').on('mouseleave', function () {
+    //    clearTimeout(timeout);
+    //});
+</script>

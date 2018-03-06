@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-ui")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+   
+    <script src="@Url.Content("~/Scripts/jquery.ui.touch-punch.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/recorder.js")"></script>
+ 
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/csshake.min.css")">
+    <script type="text/javascript" src="@Url.Content("~/Scripts/underscore-min.js")"></script>
+    
+    <link rel="stylesheet" href="@Url.Content("~/Content/jquery.scrollbar.css")"> 
+    <script src="@Url.Content("~/Scripts/jquery.scrollbar.js")"></script>
+
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="google" value="notranslate">
+</head>
+<body >
+
+  
+   
+    <div class="gradient navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">    
+                @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>*@
+                <a class="nabar-brand" href="@Url.Action("Index", "Words")"><img src="~/Content/logo.png" style="height: 46px;margin-top: 12px;"/></a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                 
+                   @if (Session["IsAdmin"] != null && Session["IsAdmin"].ToString().ToUpper() == "TRUE")
+                   {
+                            <li><a style="position: fixed;left: 7px;"href="@Url.Action("CreateCollection", "Words")">CreateWordsCollection</a></li>
+                            <br /><br />
+                            <li><a style="position: fixed;left: 7px;" href="@Url.Action("CreateCollection", "Duplicates")">CreateDuplicatesCollection</a></li>
+                   }
+ 
+                </ul>
+                <ul class="nav navbar-nav navbar-images ">
+                    <div class="scrollbar-rail">
+                        <div class="scrollableCollections">
+                            <a href="@Url.Action("Index", "Pieces")">
+                                <img class="" alt="Pieces" src="@Url.Content("~/Content/pieces.png")" />
+                                </a>
+                      
+                                @{
+                                    foreach (var co in new WordsContext().Collections.OrderBy(x=>x.Order).ToList())
+                                    {
+                                        <a href="@Url.Action("Index", co.Type.ToString(), new { @collectionid = co.CollectionId })">
+
+                                            @if (co.Image != null)
+                                            {
+                                              <img class="" alt="@co.Name" src="/Image?id=@co.Image.PictureId" />
+                                            }
+                                            else
+                                            {
+                                                <img class="" alt="@co.Name" src="~/Content/blank.png" />
+                                            }
+                                            @*<span class="nav-text">@co.Name</span>*@
+                                        </a>
+                                    }
+                                }
+</div>
+                    </div>
+                </ul> 
+            </div>
+        </div>
+    </div>
+ 
+
+ 
+    <div class="container body-content">
+
+
+
+
+        @RenderBody()
+        @*<hr />*@
+        <footer>
+            <b id="yeah"></b>
+            @*<script>
+                var user = 'josep.mir';
+                var domain = 'gmail.com';
+                var element = document.getElementById('yeah');
+
+                element.innerHTML = user + '@@' + domain;
+            </script>*@
+            @*-*@
+            <a href="http://www.josepmir.com">josepmir.com</a>
+        </footer>
+    </div>
+
+    <script>
+         $(document).ready(function () {
+             
+             var formData = new FormData();
+             formData.append("skin", localStorage.getItem('skin'));
+
+             $.ajax({
+                 type: "POST",
+                 url: '/Words/ChangeSkin',
+                 data: formData,
+                 contentType: false,
+                 processData: false,
+                 success: function (response) {
+                      // alert(response.success);
+                 },
+                 error: function (error) {
+                     alert("ChangeSkin ajax error");
+                 }
+             });
+
+             jQuery('.scrollbar-rail').scrollbar({
+                 "showArrows": true,
+                 "scrollx": "advanced"
+                 //"scrolly": "advanced"
+             });
+         });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+﻿@model  WebXuxeria.Models.MainModel
+
+
+<div class="CollectionContainer">
+    <h2><input id="CollectionName" data-collectionid="@Model.CollectionId" type="text" placeholder="collection name" value="@Model.CollectionName"></h2>
+    <a href="/Words/DeleteCollection?collectionid=@Model.CollectionId">Delete collection</a>
+      <span class="wordImageContainer">
+        <img class="wordImage img-circle" src="/Image?id=@Model.CollectionPictureId" />
+    </span>
+    <input type="file" data-collectionid="@Model.CollectionId" accept="image/*" />
+</div>
+
+<script src="~/Scripts/manageWords.js" ></script>
+@*@Scripts.Render("~/bundles/managewords")*@
+@using (Html.BeginForm("ManageWordsAjax", "Words", FormMethod.Post))
+{
+   
+    <div class="table" style="margin-left:auto; margin-right: auto">
+        @for (int i = 0; i < 10; i++)
+        {
+            var p1 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part1;
+            var p2 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part2;
+            var p3 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part3;
+            var p4 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part4;
+            var wordid = (Model.Words.Count - 1 < i) ? -1 : Model.Words[i].WordId;
+            var imageid = new Guid();
+
+            if (!(Model.Words.Count - 1 < i)&& (Model.Words[i].Image != null))
+            {
+                imageid = Model.Words[i].Image.PictureId;
+            }
+       
+            <span class="wordid" data-wordid="@wordid">
+                <div class="tr">
+                    <span class="wordImageContainer">
+                        <img class="wordImage img-circle" src="/Image?id=@imageid" />
+                    </span>
+                    <input type="file" data-wordid="@wordid" accept="image/*" />
+                </div>
+
+                <div class="tr">
+                    <div class="td">
+
+                    </div>
+                    <div class="td">
+                        @Html.Label((i + 1).ToString(), new { @class = "partLabel" })
+                    </div>
+
+                    <div class="td">
+                        @Html.TextBox("part1", p1, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part2", p2, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part3", p3, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part4", p4, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td"></div>
+                    <div class="td">
+                        <span class="audiocontrols">
+                            <i class="material-icons" onclick="playNextAudio(this);" data-partid="1">play_arrow</i>
+                            <i class="material-icons" onmousedown="startRecording(this);" onmouseup="stopRecording(this);" data-partid="1">mic</i>
+                        </span>
+                    </div>
+                    <div class="td">
+                        <span class="audiocontrols">
+                            <i class="material-icons" onclick="playNextAudio(this);" data-partid="2">play_arrow</i>
+                            <i class="material-icons" onmousedown="startRecording(this);" onmouseup="stopRecording(this);" data-partid="2">mic</i>
+                        </span>
+                    </div>
+                    <div class="td">
+                        <span class="audiocontrols">
+                            <i class="material-icons" onclick="playNextAudio(this);" data-partid="3">play_arrow</i>
+                            <i class="material-icons" onmousedown="startRecording(this);" onmouseup="stopRecording(this);" data-partid="3">mic</i>
+                        </span>
+                    </div>
+                    <div class="td">
+                        <span class="audiocontrols">
+                            <i class="material-icons" onclick="playNextAudio(this);" data-partid="4">play_arrow</i>
+                            <i class="material-icons" onmousedown="startRecording(this);" onmouseup="stopRecording(this);" data-partid="4">mic</i>
+                        </span>
+                    </div>
+                </div>
+            </span>
+        }
+            </div>
+    <br />
+
+    <!-- is this necessary? /doing anything?-->
+    @*<input id="collectionid" type="text" value="@Model.CollectionId" hidden/>*@
+    @*<input id="collectionname" type="text" value="@Model.CollectionName" hidden />*@
+ 
+
+  }
+<hr />
+
+ 

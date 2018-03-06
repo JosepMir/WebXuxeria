@@ -1,0 +1,155 @@
+﻿@model  WebXuxeria.Models.DuplicatesModel
+
+
+@Scripts.Render("~/bundles/manageduplicates")
+@using (Html.BeginForm("ManageDuplicatesAjax", "Duplicates", FormMethod.Post))
+{
+
+    <div class="grid-manage-duplicates wordid" data-wordid="@Model.Duplicate.DuplicateId" style="margin-left:auto; margin-right: auto">
+
+        <div>
+            Question
+        </div>
+        <div>
+            Answer1
+        </div>
+        <div>
+            Answer2
+        </div>
+        <div>
+            Answer3
+        </div>
+        <div>
+            Answer4
+        </div>
+        <div>
+            @Html.TextBox("question", Model.Duplicate.Question, new { @style = "width:175px;", @class = "part ajaxonchange", @autocomplete = "off" })
+        </div>
+        <div>
+            @Html.TextBox("answer1", Model.Duplicate.Answer1, new { @style = "width:175px;", @class = "part ajaxonchange", @autocomplete = "off" })
+        </div>
+        <div>
+            @Html.TextBox("answer2", Model.Duplicate.Answer2, new { @style = "width:175px;", @class = "part ajaxonchange", @autocomplete = "off" })
+        </div>
+        <div>
+            @Html.TextBox("answer3", Model.Duplicate.Answer3, new { @style = "width:175px;", @class = "part ajaxonchange", @autocomplete = "off" })
+        </div>
+        <div>
+            @Html.TextBox("answer4", Model.Duplicate.Answer4, new { @style = "width:175px;", @class = "part ajaxonchange", @autocomplete = "off" })
+        </div>
+
+        <div>
+            Correct?
+        </div>
+        <div>
+            @Html.CheckBox("answer1iscorrect", Model.Duplicate.Answer1IsCorrect, new { @class = "part ajaxonchange" })
+        </div>
+        <div>
+            @Html.CheckBox("answer2iscorrect", Model.Duplicate.Answer2IsCorrect, new { @class = "part ajaxonchange" })
+        </div>
+        <div>
+            @Html.CheckBox("answer3iscorrect", Model.Duplicate.Answer3IsCorrect, new { @class = "part ajaxonchange" })
+        </div>
+        <div>
+            @Html.CheckBox("answer4iscorrect", Model.Duplicate.Answer4IsCorrect, new { @class = "part ajaxonchange" })
+        </div>
+
+        <div class="wordImageContainer">
+            @if (Model.Duplicate.ImageQuestion != null)
+            {
+                <img class="wordImage" src="/Image?Id=@Model.Duplicate.ImageQuestion.PictureId" />
+            }
+        </div>
+        <div class="wordImageContainer">
+            @if (Model.Duplicate.Image1 != null)
+            {
+                <img class="wordImage" src="/Image?Id=@Model.Duplicate.Image1.PictureId" />
+            }
+        </div>
+        <div class="wordImageContainer">
+            @if (Model.Duplicate.Image2 != null)
+            {
+                <img class="wordImage" src="/Image?Id=@Model.Duplicate.Image2.PictureId" />
+            }
+
+
+        </div>
+        <div class="wordImageContainer">
+            @if (Model.Duplicate.Image3 != null)
+            {
+                <img class="wordImage " src="/Image?Id=@Model.Duplicate.Image3.PictureId" />
+            }
+
+
+        </div>
+        <div class="wordImageContainer">
+
+            @if (Model.Duplicate.Image4 != null)
+            {
+                <img class="wordImage " src="/Image?Id=@Model.Duplicate.Image4.PictureId" />
+            }
+
+
+        </div>
+
+
+        <div>
+            <a href="@Url.Action("RemoveImage", "Duplicates", new {id = @Model.Duplicate.DuplicateId, Num=0 })">
+                <i class="material-icons">delete_sweep</i>
+            </a>
+        </div>
+        <div>
+            <a href="@Url.Action("RemoveImage", "Duplicates", new {id = @Model.Duplicate.DuplicateId, Num=1 })">
+                <i class="material-icons">delete_sweep</i>
+            </a>
+        </div>
+        <div>
+            <a href="@Url.Action("RemoveImage", "Duplicates", new {id = @Model.Duplicate.DuplicateId, Num=2 })">
+                <i class="material-icons">delete_sweep</i>
+            </a>
+        </div>
+        <div>
+            <a href="@Url.Action("RemoveImage", "Duplicates", new {id = @Model.Duplicate.DuplicateId, Num=3 })">
+                <i class="material-icons">delete_sweep</i>
+            </a>
+        </div>
+        <div>
+            <a href="@Url.Action("RemoveImage", "Duplicates", new {id = @Model.Duplicate.DuplicateId, Num=4 })">
+                <i class="material-icons">delete_sweep</i>
+            </a>
+        </div>
+
+
+        <div>
+            <input id="image0" class="ajaxonchange" type="file" data-num="0" accept="image/*" style="width: 200px;" />
+        </div>
+        <div>
+            <input id="image1" class="ajaxonchange" type="file" data-num="1" accept="image/*" style="width: 200px;" />
+        </div>
+        <div>
+            <input id="image2" class="ajaxonchange" type="file" data-num="2" accept="image/*" style="width: 200px;" />
+        </div>
+        <div>
+            <input id="image3" class="ajaxonchange" type="file" data-num="3" accept="image/*" style="width: 200px;" />
+        </div>
+        <div>
+            <input id="image4" class="ajaxonchange" type="file" data-num="4" accept="image/*" style="width: 200px;" />
+        </div>
+
+
+
+
+    </div>
+
+    <br />
+
+
+}
+
+<br />
+<br />
+<br />
+
+<hr />
+
+

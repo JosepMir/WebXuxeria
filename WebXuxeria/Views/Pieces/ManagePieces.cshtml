@@ -1,0 +1,81 @@
+﻿@model  WebXuxeria.Models.MainModel
+
+
+<script src="~/Scripts/manageWords.js" ></script>
+@*@Scripts.Render("~/bundles/managewords")*@
+@using (Html.BeginForm("ManageWordsAjax", "Words", FormMethod.Post))
+{
+
+    <div class="table" style="margin-left:auto; margin-right: auto">
+        @for (int i = 0; i < 10; i++)
+        {
+            var p1 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part1;
+            var p2 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part2;
+            var p3 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part3;
+            var p4 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part4;
+            var p5 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part5;
+            var p6 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part6;
+            var p7 = (Model.Words.Count - 1 < i) ? "" : Model.Words[i].Part7;
+            var wordid = (Model.Words.Count - 1 < i) ? -1 : Model.Words[i].WordId;
+
+            <span class="wordid" data-wordid="@wordid">
+
+                <div class="tr">
+                    <div class="td">
+
+                    </div>
+                    <div class="td">
+                        @Html.Label((i + 1).ToString(), new { @class = "partLabel" })
+                    </div>
+
+                    <div class="td">
+                        @Html.TextBox("part1", p1, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part2", p2, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part3", p3, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part4", p4, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part5", p5, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part6", p6, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                    <div class="td">
+                        @Html.TextBox("part7", p7, new { @class = "part", @autocomplete = "off" })
+                    </div>
+                </div>
+
+                <div class="tr">
+                    <div class="td"></div>
+
+                    @for (int j = 1; j < 8; j++)
+                    {
+                        <div class="td">
+                            <span class="audiocontrols">
+                                <i class="material-icons" onclick="playNextAudio(this);" data-partid="@j">play_arrow</i>
+                                <i class="material-icons" onmousedown="startRecording(this);" onmouseup="stopRecording(this);" data-partid="@j">mic</i>
+                            </span>
+                        </div>
+                    }
+
+                </div>
+            </span>
+        }
+    </div>
+    <br />
+
+    <!-- is this necessary? /doing anything?-->
+    @*<input id="collectionid" type="text" value="@Model.CollectionId" hidden/>*@
+    @*<input id="collectionname" type="text" value="@Model.CollectionName" hidden />*@
+
+
+}
+<hr />
+
+ 

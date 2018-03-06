@@ -1,0 +1,133 @@
+﻿@model  WebXuxeria.Models.DuplicatesModel
+@*@{
+        ViewBag.Title = "Pieces";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }*@
+
+@if (Session["IsAdmin"] != null && Session["IsAdmin"].ToString().ToUpper() == "TRUE")
+{
+    <br />
+    <a href="@Url.Action("ManageDuplicates", "Duplicates", new { id = @Model.Duplicate.DuplicateId })" class="material-icons">tune</a>
+    <br />
+}
+<a href="@Url.Action("ManageDuplicates", "Duplicates")">Create New Duplicate</a>
+<br /><br />
+<span style="font-size: 83px;">
+    <a href="@Url.Action("Previous", "Duplicates", new { id = @Model.Duplicate.DuplicateId })">⇦</a>
+    <a style="float:right;" href="@Url.Action("Next", "Duplicates", new {id = @Model.Duplicate.DuplicateId })">⇨</a>
+</span>
+
+<div>Order: @Model.Duplicate.Order</div>
+
+<div class="woodduplicates">
+    <div class="grid-duplicates">
+        <div class="gridcentered marginauto">
+            <div class="wood wood-inactive" style="width: 386px; height: 134px;">
+                @if (Model.Duplicate.ImageQuestion == null)
+                {
+                    @Model.Duplicate.Question
+                }
+                else
+                {
+                    <img class="duplicatesImage" src="/Image?Id=@Model.Duplicate.ImageQuestion.PictureId" />
+                } 
+            </div>
+        </div>
+        <script>
+            var answer1 = @(Model.Duplicate.Answer1IsCorrect.ToString().ToLower());
+            var answer2 = @(Model.Duplicate.Answer2IsCorrect.ToString().ToLower());
+            var answer3 = @(Model.Duplicate.Answer3IsCorrect.ToString().ToLower());
+            var answer4 = @(Model.Duplicate.Answer4IsCorrect.ToString().ToLower());
+
+            var pending = {};
+            pending['answer1'] = @(Model.Duplicate.Answer1IsCorrect.ToString().ToLower());
+            pending['answer2'] =@(Model.Duplicate.Answer2IsCorrect.ToString().ToLower());
+            pending['answer3'] = @(Model.Duplicate.Answer3IsCorrect.ToString().ToLower());
+            pending['answer4'] =@(Model.Duplicate.Answer4IsCorrect.ToString().ToLower());
+            var CorrectAnswerCount = @Model.Duplicate.CorrectAnswerCount;
+        </script>
+  
+        <div class="wood" id="answer1" style="width: 386px; height: 134px;">
+            <img class="v-duplicates" src="~/Content/v.png" style="display: none" />
+            @if (Model.Duplicate.Image1 == null)
+            {
+                @Model.Duplicate.Answer1
+            }
+            else
+            {
+                <img class="duplicatesImage" src="/Image?Id=@Model.Duplicate.Image1.PictureId" />
+            }
+
+        </div>
+
+        <div class="wood" id="answer2" style="width: 386px;height: 134px;">
+            <img class="v-duplicates" src="~/Content/v.png" style="display: none" />
+            @if (Model.Duplicate.Image2 == null)
+            {
+                @Model.Duplicate.Answer2
+            }
+            else
+            {
+                <img class="duplicatesImage" src="/Image?Id=@Model.Duplicate.Image2.PictureId" />
+            }
+        </div>
+
+        <div class="wood" id="answer3" style="width: 386px;height: 134px;">
+            <img class="v-duplicates" src="~/Content/v.png" style="display: none" />
+            @if (Model.Duplicate.Image3 == null)
+            {
+                @Model.Duplicate.Answer3
+            }
+            else
+            {
+                <img class="duplicatesImage" src="/Image?Id=@Model.Duplicate.Image3.PictureId" />
+            }
+        </div>
+
+        <div class="wood" id="answer4" style="width: 386px;height: 134px;">
+            <img class="v-duplicates" src="~/Content/v.png" style="display: none" />
+            @if (Model.Duplicate.Image4 == null)
+            {
+                @Model.Duplicate.Answer4
+            }
+            else
+            {
+                <img class="duplicatesImage" src="/Image?Id=@Model.Duplicate.Image4.PictureId" />
+            }
+        </div>
+
+
+    </div>
+</div>
+<script> 
+    $(document).ready(function () {
+        $('.wood').not('.wood-inactive').click(function () {
+            var isCorrect= eval($(this).attr('id'));
+            if (isCorrect) {
+                $(this).children('.v-duplicates').show(200);
+
+                pending[$(this).attr('id')] = false;
+                if (nonePending()) {
+
+                    setTimeout(function(){
+                           $('.body-content').fadeOut(700);;
+                    }, 600);
+                    setTimeout(function(){
+                        window.location.href = '@Url.Action("Next", "Duplicates", new { id = @Model.Duplicate.DuplicateId })';
+                    }, 1300);
+
+                }
+            }  else {
+                $(this).css("text-decoration", "line-through");
+                $(this).css("opacity", 0.2);
+            }
+
+        });
+      
+         
+    });
+
+    function nonePending() {
+        return !( pending['answer1'] || pending['answer2'] || pending['answer3'] || pending['answer4']);
+    }
+</script>

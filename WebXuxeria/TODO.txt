@@ -1,0 +1,31 @@
+﻿pe pi to
+bi xi to
+
+ver mell
+ta ron ja
+
+plas ti decor
+
+xu xe ria
+
+
+
+un so i animacio de "correcte!" i q digui automaticament tota la paraula
+
+fer les paraules de 1 en 1
+
+----
+wav ->ogg
+
+so a la base de dades
+
+--put a time limit on sound (5 seconds?)
+--a limit on pages someone can build
+
+
+
+a gestio, eliminar so si es canvia la paraula.
+
+a gestio, marcar en vermell o dalguna manera les q no tenen so.
+
+a gestio, no SAVE button
